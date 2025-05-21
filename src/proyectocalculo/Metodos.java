@@ -1,7 +1,7 @@
 package proyectocalculo;
 
 import java.util.Scanner;
-import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.Expression;       
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 public class Metodos {
@@ -74,8 +74,53 @@ public class Metodos {
     }
 
     public void MetodoNewton() {
-        System.out.println("Método de Newton");
+       System.out.println("Método de Newton");
+    System.out.print("Ingrese la función en términos de x (ejemplo: x^3 - 2*x - 5): ");
+    String funcion = scanner.nextLine();
+
+    System.out.print("Ingrese la derivada de la función (ejemplo: 3*x^2 - 2): ");
+    String derivada = scanner.nextLine();
+
+    System.out.print("Ingrese el valor inicial de xi: ");
+    double xi = scanner.nextDouble();
+
+    int iteraciones = 0;
+    double tolerancia = 0.0001;
+    double xrAnterior = 0;
+    double xr = 0;
+
+    System.out.println("\nTabla de Iteraciones:");
+    System.out.printf("%-3s | %-10s | %-10s | %-10s | %-10s | %-10s\n", "i", "xi", "f(xi)", "f'(xi)", "xr", "Tolerancia");
+    System.out.println("--------------------------------------------------------------------------");
+
+    while (true) {
+        double fxi = evaluarFuncion(funcion, xi);
+        double fpxi = evaluarFuncion(derivada, xi);
+        xr = xi - (fxi / fpxi);
+
+        if (iteraciones == 0) {
+            System.out.printf("%-3d | %-10.4f | %-10.4f | %-10.4f | %-10.4f | %-10s\n",
+                    iteraciones + 1, xi, fxi, fpxi, xr, "N/A");
+        } else {
+            double diferencia = Math.abs(xr - xrAnterior);
+            System.out.printf("%-3d | %-10.4f | %-10.4f | %-10.4f | %-10.4f | %-10.4f\n",
+                    iteraciones + 1, xi, fxi, fpxi, xr, diferencia);
+            if (diferencia < tolerancia) {
+                break;
+            }
+        }
+
+        xrAnterior = xr;
+        xi = xr;
+        iteraciones++;
+        if (iteraciones > 100) break; // Límite de seguridad
     }
+
+    System.out.println("\nRaíz encontrada: " + String.format("%.10f", xr));
+}
+
+        
+    
 
     public void DerivadaMaxyMin() {
         System.out.println("Máximos y mínimos");
