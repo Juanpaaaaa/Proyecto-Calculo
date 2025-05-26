@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class MenuDerivacion extends JFrame {
+    
 
     public MenuDerivacion() {
         setTitle("Menú de Derivación");
@@ -38,6 +39,7 @@ public class MenuDerivacion extends JFrame {
 
         btnValorMedio.addActionListener(e -> {
             new VentanaValorMedio().setVisible(true);
+            
         });
 
         btnNewton.addActionListener(e -> {
@@ -45,7 +47,7 @@ public class MenuDerivacion extends JFrame {
         });
 
         btnMaxMin.addActionListener(e -> {
-            new VentanaMaxMin().setVisible(true);
+            new VentanaMaxyMin().setVisible(true);
         });
     }
 

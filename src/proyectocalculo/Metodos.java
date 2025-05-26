@@ -188,6 +188,82 @@ public class Metodos {
 
     public void TeoremaRolle() {
         System.out.println("Teorema de Rolle");
+        System.out.print("Ingrese la función en términos de x (ejemplo: x*x - 4*x + 3): ");
+    String funcion = scanner.nextLine().toLowerCase().replace(" ", "");
+
+    System.out.print("Ingrese el valor de a: ");
+    double a = Double.parseDouble(scanner.nextLine());
+
+    System.out.print("Ingrese el valor de b: ");
+    double b = Double.parseDouble(scanner.nextLine());
+
+    try {
+        double fa = evaluarFuncion(funcion, a);
+        double fb = evaluarFuncion(funcion, b);
+
+        System.out.printf("f(a) = %.5f\n", fa);
+        System.out.printf("f(b) = %.5f\n", fb);
+
+        if (Math.abs(fa - fb) > 1e-6) {
+            System.out.println("No se cumple que f(a) = f(b). No se puede aplicar el Teorema de Rolle.");
+            return;
+        }
+
+        System.out.println("Se cumple f(a) = f(b). Buscando c en (a, b) tal que f'(c) ≈ 0...");
+
+        double c = buscarDerivadaCero(funcion, a, b);
+
+        if (!Double.isNaN(c)) {
+            double derivadaC = derivada(funcion, c);
+            System.out.printf("Se encontró un punto c ≈ %.5f tal que f'(c) ≈ %.5f\n", c, derivadaC);
+        } else {
+            System.out.println("No se encontró un punto c en (a, b) con f'(c) ≈ 0.");
+        }
+
+        // ------------------ NUEVO BLOQUE: FACTORIZACIÓN CUADRÁTICA ------------------
+        if (funcion.matches("[-+]?\\d*\\?x\\*x[-+]\\d\\*?x[-+]\\d+")) {
+            System.out.println("\nIntentando factorizar la función usando fórmula cuadrática:");
+
+            // Extraer coeficientes a, b, c
+            String[] tokens = funcion.replace("*x*x", "#").replace("*x", "@").split("(?=[+-])");
+            double coefA = 0, coefB = 0, coefC = 0;
+            for (String token : tokens) {
+                if (token.contains("#")) coefA = Double.parseDouble(token.replace("#", ""));
+                else if (token.contains("@")) coefB = Double.parseDouble(token.replace("@", ""));
+                else coefC = Double.parseDouble(token);
+            }
+
+            // Aplicar fórmula cuadrática
+            double discriminante = coefB * coefB - 4 * coefA * coefC;
+            if (discriminante < 0) {
+                System.out.println("No tiene soluciones reales. Discriminante < 0.");
+            } else {
+                double x1 = (-coefB + Math.sqrt(discriminante)) / (2 * coefA);
+                double x2 = (-coefB - Math.sqrt(discriminante)) / (2 * coefA);
+                System.out.printf("Soluciones reales de la ecuación cuadrática:\n x1 = %.5f\n x2 = %.5f\n", x1, x2);
+            }
+        }
+        // ---------------------------------------------------------------------------
+
+    } catch (Exception e) {
+        System.out.println("Error al evaluar la función. Verifique la sintaxis.");
+    }
+}
+
+
+// Método para buscar un c donde f'(c) ≈ 0 (derivada numérica)
+public double buscarDerivadaCero(String funcion, double a, double b) {
+    double paso = (b - a) / 1000;
+
+    for (double x = a + paso; x < b; x += paso) {
+        double derivada = derivada(funcion, x);
+        if (Math.abs(derivada) < 1e-5) {
+            return x;
+        }
+    }
+
+    return Double.NaN;
+
     }
 
     public void MetodoNewton() {
@@ -238,6 +314,80 @@ public class Metodos {
 
     public void DerivadaMaxyMin() {
         System.out.println("Máximos y mínimos");
+        System.out.println("Aplicación de Máximos y Mínimos");
+
+    System.out.print("Ingrese la función en términos de x (ejemplo: x*x - 4*x + 3): ");
+    String funcion = scanner.nextLine().toLowerCase().replace(" ", "");
+
+    System.out.print("Ingrese el valor de a (inicio del intervalo): ");
+    double a = Double.parseDouble(scanner.nextLine());
+
+    System.out.print("Ingrese el valor de b (fin del intervalo): ");
+    double b = Double.parseDouble(scanner.nextLine());
+
+    try {
+        double paso = 0.01;
+        double xCritico = Double.NaN;
+        double derivadaAnt = derivada(funcion, a);
+        boolean encontrado = false;
+
+        // Búsqueda de punto crítico (donde derivada ≈ 0)
+        for (double x = a + paso; x < b; x += paso) {
+            double derivadaAct = derivada(funcion, x);
+            if (Math.signum(derivadaAnt) != Math.signum(derivadaAct)) {
+                xCritico = x;
+                encontrado = true;
+                break;
+            }
+            derivadaAnt = derivadaAct;
+        }
+
+        if (encontrado) {
+            double fCritico = evaluarFuncion(funcion, xCritico);
+            double segundaDerivada = (derivada(funcion, xCritico + paso) - derivada(funcion, xCritico)) / paso;
+
+            System.out.printf("Punto crítico encontrado en x ≈ %.5f\n", xCritico);
+            System.out.printf("f(x) ≈ %.5f\n", fCritico);
+
+            if (segundaDerivada > 0) {
+                System.out.println("Clasificación: Mínimo local.");
+            } else if (segundaDerivada < 0) {
+                System.out.println("Clasificación: Máximo local.");
+            } else {
+                System.out.println("Clasificación: Punto de inflexión o dudoso.");
+            }
+        } else {
+            System.out.println("No se encontró punto crítico en el intervalo.");
+        }
+
+        // ------------------ BLOQUE DE FÓRMULA CUADRÁTICA ------------------
+        if (funcion.matches("[-+]?\\d*\\?x\\*x[-+]\\d\\*?x[-+]\\d+")) {
+            System.out.println("\nIntentando factorizar la función usando fórmula cuadrática:");
+
+            // Extraer coeficientes a, b, c
+            String[] tokens = funcion.replace("*x*x", "#").replace("*x", "@").split("(?=[+-])");
+            double coefA = 0, coefB = 0, coefC = 0;
+            for (String token : tokens) {
+                if (token.contains("#")) coefA = Double.parseDouble(token.replace("#", ""));
+                else if (token.contains("@")) coefB = Double.parseDouble(token.replace("@", ""));
+                else coefC = Double.parseDouble(token);
+            }
+
+            // Aplicar fórmula cuadrática
+            double discriminante = coefB * coefB - 4 * coefA * coefC;
+            if (discriminante < 0) {
+                System.out.println("No tiene soluciones reales. Discriminante < 0.");
+            } else {
+                double x1 = (-coefB + Math.sqrt(discriminante)) / (2 * coefA);
+                double x2 = (-coefB - Math.sqrt(discriminante)) / (2 * coefA);
+                System.out.printf("Soluciones reales de la ecuación cuadrática:\n x1 = %.5f\n x2 = %.5f\n", x1, x2);
+            }
+        }
+
+    } catch (Exception e) {
+        System.out.println("Error al evaluar la función. Verifique la sintaxis.");
+    }
+
     }
 
     public void lanzarGraficaDemo() {

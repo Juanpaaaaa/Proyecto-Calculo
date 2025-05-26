@@ -3,11 +3,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package proyectocalculo;
+import javax.swing.*;
 
 /**
  *
  * @author juanpablo
  */
-public class VentanaMaxyMin {
+public class VentanaMaxyMin extends JFrame{
     
+      public VentanaMaxyMin(){   
+    setTitle("Metodo de Newton");
+     setSize(400, 300);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        // Aquí puedes agregar componentes
+    
+    
+}
 }
